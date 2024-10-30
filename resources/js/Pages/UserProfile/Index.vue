@@ -1,0 +1,161 @@
+<script setup>
+    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import GuestLayout from '@/Layouts/GuestLayout.vue';
+    import InputError from '@/Components/InputError.vue';
+    import Babble from '@/Components/Babble.vue';
+    import ProfileInfo from '@/Components/ProfileInfo.vue';
+    import BabbleStoreForm from '@/Components/BabbleStoreForm.vue';
+    import { Head, useForm } from '@inertiajs/vue3';
+    import ViewBox from '@/Components/ViewBox.vue';
+    import Clip from '@/Components/Clip.vue';
+    import { usePreviewStore } from '@/Stores/currentPreview.js';
+    import library from '@/myLibraryObject.js';
+    
+    let props = defineProps(['babbles', 'user', 'images', 'subscription', 'localization', 'session']);
+    let uri = window.location.pathname;
+    const store = usePreviewStore();
+    const form = useForm({
+        user: props.user,
+        images: props.images,
+        add_files: {},
+        automatic_upload: true
+    });
+
+    ;(() => {
+        window.addEventListener('scroll', library.throttle(checkPosition, 1000));
+        window.addEventListener('resize', library.throttle(checkPosition, 1000));
+    })();
+
+    function checkPosition() {
+        if(props.babbles.data.length >= 10) {
+            if(!props.babbles.stop) {
+                let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
+                if (pixelsToBottom < 1500) {
+                    axios.post(route('next.page'), props.babbles)
+                    .then(result => {
+                        if(result.data.stop) {
+                            props.babbles.stop = result.data.stop;
+                        }
+                        if(result.data.data) {
+                            for(let element of result.data.data) {
+                                props.babbles.data.push(element);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+</script>
+
+<style>
+    .list-enter-active,
+    .list-leave-active,
+    .preview-enter-active,
+    .preview-leave-active {
+        transition: all 0.5s ease;
+    }
+    .list-enter-from,
+    .list-leave-to {
+        opacity: 0;
+    }
+    .preview-enter-from,
+    .preview-leave-to {
+        opacity: 0;
+    }
+</style>
+ 
+<template>
+    <Head :title="user.name" />
+    <AuthenticatedLayout v-if="$page.props.auth.user" :localization="localization" :session="session">
+        <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+        <div class="w-full p-4">
+            <ProfileInfo :user="user" :subscription="subscription" :localization="localization" :session="session" />
+            <div v-if="$page.props.auth.user" class="gallery mt-4">
+                <div class="max-w-2lg md:max-w-5xl mx-auto p-4 shadow dark:shadow-none dark:border dark:border-dark overflow-hidden bg-light-primary dark:bg-dark-primary rounded-xl">
+                    <div v-if="images.length > 0" class="w-full min-h-10 grid grid-cols-3 sm:grid-cols-6 gap-2 lg:gap-4 overflow-hidden rounded-lg">
+                        <picture v-for="(image, index) in form.images" :key="image" class="w-full text-darker dark:text-light">
+                            <div v-if="image.stub" class="w-full flex flex-col justify-center items-center aspect-square rounded-lg cursor-pointer object-cover bg-light dark:bg-dark shadow dark:shadow-none dark:border dark:border-dark">
+                                <span class="loader"></span>
+                                <span class="percentage mt-1 text-base font-semibold">{{ image.percentage }}</span>
+                            </div>
+                            <img v-else @click="library.showViewBox(store, form.images, index, user)" :src="image.src" alt="" class="w-full aspect-square rounded-lg cursor-pointer object-cover bg-light dark:bg-dark shadow-sm dark:shadow-none dark:border dark:border-dark" loading="lazy">
+                        </picture>
+                    </div>
+                    <div v-else class="w-full min-h-16 flex text-dark dark:text-light justify-center items-center gap-4 overflow-hidden rounded-lg">
+                        {{ localization[session.language].gallery_empty }}
+                    </div>
+                    <hr class="my-4 border-light dark:border-dark">
+                    <div class="h-8 flex gap-4" :class="{ 'justify-between': images.length > 0 || $page.props.auth.user.id === user.id, 'justify-center': images.length == 0}">
+                        <a v-if="images.length > 0 || $page.props.auth.user.id === user.id" :href="'/gallery/' + user.id" class="w-32 h-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-lighter uppercase tracking-widest bg-dark-primary dark:bg-dark hover:bg-dark-hover active:bg-dark-hover select-none transition ease-in-out duration-150">
+                            {{ localization[session.language].browse }}
+                        </a>
+                        <div class="flex justify-between items-center text-darker dark:text-light font-semibold text-xs uppercase tracking-widest">
+                            {{ localization[session.language].user_gallery }}
+                        </div>
+                        <Clip
+                            v-if="$page.props.auth.user.id === user.id"
+                            class="w-32 h-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-lighter uppercase tracking-widest bg-dark-primary dark:bg-dark hover:bg-dark-hover active:bg-dark-hover select-none transition ease-in-out duration-150"
+                            :form="form"
+                            :visible="false"
+                        >
+                            <template #sign>
+                                {{ localization[session.language].add_image }}
+                            </template>
+                        </Clip>
+                        <div v-else-if="images.length > 0" class="w-32 h-full"></div>
+                    </div>
+                    <InputError :message="form.errors.message" class="mt-4" />
+                </div>
+            </div>
+            <div class="max-w-2xl mx-auto mt-4 sm:px-6 lg:px-8">
+                <div v-if="uri == '/home'" class="p-6 mb-4 text-darker dark:text-light bg-light-primary dark:bg-dark-primary shadow dark:shadow-none dark:border dark:border-dark rounded-lg">
+                    <BabbleStoreForm
+                        :babbles="babbles.data"
+                        :parentObject="null"
+                        :toggleScroll="false"
+                        :localization="localization"
+                        :session="session"
+                    />
+                </div>
+                <div class="max-w-2xl mx-auto">
+                    <div class="">
+                        <TransitionGroup name="list" tag="div">
+                            <div v-for="babble in babbles.data" :key="babble.id">
+                                <Babble
+                                    :babble="babble"
+                                    :babbles="babbles.data"
+                                    :localization="localization"
+                                    :session="session"
+                                />
+                            </div>
+                        </TransitionGroup>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </AuthenticatedLayout>
+
+    <GuestLayout v-else :localization="localization" :session="session">
+        <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+        <div class="w-full p-4">
+            <ProfileInfo :user="user" :subscription="subscription" :localization="localization" :session="session" />
+            <div class="max-w-2xl mx-auto mt-4 sm:px-6 lg:px-8">
+                <div class="max-w-2xl mx-auto">
+                    <div class="">
+                        <TransitionGroup name="list" tag="div">
+                            <div v-for="babble in babbles.data" :key="babble.id">
+                                <Babble
+                                    :babble="babble"
+                                    :babbles="babbles.data"
+                                    :localization="localization"
+                                    :session="session"
+                                />
+                            </div>
+                        </TransitionGroup>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </GuestLayout>
+</template>
