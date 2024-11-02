@@ -23,8 +23,8 @@
 <template>
     <GuestLayout :localization="localization" :session="session">
         <Head :title="localization[session.language].log_in" />
-        <div class="flex justify-center items-center p-6">
-            <div class="w-full max-w-xl mx-auto p-6 rounded-xl text-darker dark:text-light bg-light-primary dark:bg-dark-primary shadow dark:shadow-none dark:border dark:border-dark">
+        <div class="grid items-center sm:flex sm:justify-center sm:items-center px-6 min-h-[calc(100vh-64px)]">
+            <div class="w-full max-w-xl p-6 mb-16 rounded-xl text-darker dark:text-light bg-light-primary dark:bg-dark-primary shadow dark:shadow-none dark:border dark:border-dark">
                 <LoginForm 
                     :canResetPassword="canResetPassword"
                     :status="status"

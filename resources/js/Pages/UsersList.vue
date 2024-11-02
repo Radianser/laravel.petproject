@@ -11,22 +11,20 @@
         window.addEventListener('resize', library.throttle(checkPosition, 1000));
     })();
     function checkPosition() {
-        if(profiles.data.length >= 0) {
-            if(!props.profiles.stop) {
-                let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
-                if (pixelsToBottom < 1500) {
-                    axios.post(route('likes.show'))
-                    .then(result => {
-                        if(result.data[1]) {
-                            props.profiles.stop = result.data[1];
+        if(!props.profiles.stop) {
+            let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
+            if (pixelsToBottom < 1500) {
+                axios.post(route('likes.show'))
+                .then(result => {
+                    if(result.data[1]) {
+                        props.profiles.stop = result.data[1];
+                    }
+                    if(result.data[0]) {
+                        for(let element of result.data[0]) {
+                            props.profiles.data.push(element);
                         }
-                        if(result.data[0]) {
-                            for(let element of result.data[0]) {
-                                props.profiles.data.push(element);
-                            }
-                        }
-                    });
-                }
+                    }
+                });
             }
         }
     }

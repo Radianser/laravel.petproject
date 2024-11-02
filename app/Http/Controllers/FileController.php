@@ -132,7 +132,7 @@ class FileController extends Controller
             break;
         }
 
-        $data->user = $this->redis->get_user($data->user_id);
+        // $data->user = $this->redis->get_user($data->user_id);
 
         return response()->json([
             'data' => $data,

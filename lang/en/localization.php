@@ -27,7 +27,7 @@ return [
     'edit' => 'Edit',
     'finish' => 'Finish',
     'delete' => 'Delete',
-    'add_image' => 'Add new',
+    'add_image' => 'Add',
     'user_gallery' => 'Gallery',
 
     'change_cover' => 'Change cover',

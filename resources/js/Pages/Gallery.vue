@@ -1,5 +1,6 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
     import { Head, useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import ViewBox from '@/Components/ViewBox.vue';
@@ -42,27 +43,30 @@
         <ViewBox v-if="store.show === true" :localization="localization" :session="session"/>
         <div class="w-full p-4">
             <div class="max-w-2lg md:max-w-5xl mx-auto p-2 lg:p-4 text-darker dark:text-light bg-light-primary dark:bg-dark-primary dark:border dark:border-dark shadow dark:shadow-none rounded-lg">
-                <div v-if="$page.props.auth.user.id === user.id" class="h-8 flex gap-4 justify-between">
-                    <button @click="images.data.length > 0 ? edit = !edit : false;" class="w-32 h-full flex justify-center items-center rounded-lg text-lighter bg-dark-primary dark:bg-dark hover:bg-dark-hover active:bg-dark-hover transition ease-in-out duration-150">
+
+                <h1 class="text-center mb-2 font-semibold text-xs uppercase tracking-widest">
+                    {{ localization[session.language].user_gallery }}
+                </h1>
+                <hr class="my-2 border-light dark:border-dark">
+
+                <div v-if="$page.props.auth.user.id === user.id" class="h-8 mb-2 flex gap-4 justify-between">
+                    <PrimaryButton @click="edit = !edit">
                         {{ !edit ? localization[session.language].edit : localization[session.language].finish }}
-                    </button>
-                    <div class="flex justify-between items-center font-semibold text-xs uppercase tracking-widest">
-                        {{ localization[session.language].user_gallery }}
-                    </div>
-                    <Clip
-                        class="w-32 h-full cursor-pointer flex justify-center items-center rounded-lg text-lighter bg-dark-primary dark:bg-dark hover:bg-dark-hover active:bg-dark-hover transition ease-in-out duration-150"
-                        :form="form"
-                        :visible="false"
-                    >
-                        <template #sign>
-                            {{ localization[session.language].add_image }}
-                        </template>
-                    </Clip>
+                    </PrimaryButton>
+                    <PrimaryButton>
+                            <Clip
+                                :form="form"
+                                :visible="false"
+                            >
+                            <template #sign>
+                                {{ localization[session.language].add_image }}
+                            </template>
+                        </Clip>
+                    </PrimaryButton>
                 </div>
-                <div v-else class="flex justify-center items-center font-semibold text-xs uppercase tracking-widest">
+                <div v-else class="flex mb-2 justify-center items-center font-semibold text-xs uppercase tracking-widest">
                     {{ localization[session.language].user_gallery }}
                 </div>
-                <hr class="my-4 border-light dark:border-dark">
                 <div v-if="images.data.length > 0" class="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-4 rounded-lg">
                     <picture v-for="(image, index) in form.images" :key="image" class="relative w-full">
                         <div v-if="image.stub" class="w-full flex flex-col justify-center items-center aspect-square rounded-lg cursor-pointer object-cover bg-light dark:bg-dark shadow dark:shadow-none dark:border dark:border-dark">

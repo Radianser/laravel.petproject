@@ -17,6 +17,8 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\RedisController;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\App;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -78,7 +80,9 @@ Route::middleware(['auth', 'verified', 'online', 'lang'])->controller(UserContro
     Route::post('/subscribe', 'subscribe')->name('user.subscribe');
     Route::post('/unsubscribe', 'unsubscribe_deleted_user')->name('user.unsubscribe');
     Route::get('/home/{follow}/{id}', 'follow');
-    Route::match(['GET', 'POST'], '/gallery/{id}', 'gallery')->name('gallery');
+
+    Route::get('/gallery/{id}', 'gallery')->name('gallery');
+    // Route::match(['GET', 'POST'], '/gallery/{id}', 'gallery')->name('gallery');
 });
 
 Route::middleware(['auth', 'verified', 'online', 'lang'])->controller(SearchController::class)->group(function () {
@@ -97,4 +101,14 @@ Route::middleware(['auth', 'verified', 'online', 'lang'])->group(function () {
 Route::middleware(['auth', 'verified', 'online', 'lang'])->controller(FileController::class)->group(function () {
     Route::post('/validate/files', 'validate_files')->name('files.validate');
     Route::post('/upload/files/{attachmentable_id}/{attachmentable_type}', 'upload')->name('files.upload');
+});
+
+Route::get('/test', function() {
+    // $string = '111111aA!';
+    // $hash = password_hash($string, PASSWORD_DEFAULT);
+
+    // echo $hash;
+
+    $locale = App::currentLocale();
+    echo $locale;
 });

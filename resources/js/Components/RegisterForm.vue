@@ -42,7 +42,6 @@ const submit = () => {
                     class="mt-2 block w-full"
                     v-model="form.name"
                     required
-                    autofocus
                     autocomplete="name"
                     :placeholder="localization[session.language].name_placeholder"
                 />

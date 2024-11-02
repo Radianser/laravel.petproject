@@ -140,7 +140,7 @@ return [
 
     // register
     'register' => 'Регистрация',
-    'already_registered' => 'Уже зарегистрированы?',
+    'already_registered' => 'Уже с нами?',
 
     // forgot password
     'forgot_password_title' => 'Восстановление пароля',

@@ -1,6 +1,7 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import GuestLayout from '@/Layouts/GuestLayout.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputError from '@/Components/InputError.vue';
     import Babble from '@/Components/Babble.vue';
     import ProfileInfo from '@/Components/ProfileInfo.vue';
@@ -27,22 +28,20 @@
     })();
 
     function checkPosition() {
-        if(props.babbles.data.length >= 10) {
-            if(!props.babbles.stop) {
-                let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
-                if (pixelsToBottom < 1500) {
-                    axios.post(route('next.page'), props.babbles)
-                    .then(result => {
-                        if(result.data.stop) {
-                            props.babbles.stop = result.data.stop;
+        if(!props.babbles.stop) {
+            let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
+            if (pixelsToBottom < 1500) {
+                axios.post(route('next.page'), props.babbles)
+                .then(result => {
+                    if(result.data.stop) {
+                        props.babbles.stop = result.data.stop;
+                    }
+                    if(result.data.data) {
+                        for(let element of result.data.data) {
+                            props.babbles.data.push(element);
                         }
-                        if(result.data.data) {
-                            for(let element of result.data.data) {
-                                props.babbles.data.push(element);
-                            }
-                        }
-                    });
-                }
+                    }
+                });
             }
         }
     }
@@ -71,6 +70,7 @@
         <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
         <div class="w-full p-4">
             <ProfileInfo :user="user" :subscription="subscription" :localization="localization" :session="session" />
+
             <div v-if="$page.props.auth.user" class="gallery mt-4">
                 <div class="max-w-2lg md:max-w-5xl mx-auto p-4 shadow dark:shadow-none dark:border dark:border-dark overflow-hidden bg-light-primary dark:bg-dark-primary rounded-xl">
                     <div v-if="images.length > 0" class="w-full min-h-10 grid grid-cols-3 sm:grid-cols-6 gap-2 lg:gap-4 overflow-hidden rounded-lg">
@@ -87,29 +87,32 @@
                     </div>
                     <hr class="my-4 border-light dark:border-dark">
                     <div class="h-8 flex gap-4" :class="{ 'justify-between': images.length > 0 || $page.props.auth.user.id === user.id, 'justify-center': images.length == 0}">
-                        <a v-if="images.length > 0 || $page.props.auth.user.id === user.id" :href="'/gallery/' + user.id" class="w-32 h-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-lighter uppercase tracking-widest bg-dark-primary dark:bg-dark hover:bg-dark-hover active:bg-dark-hover select-none transition ease-in-out duration-150">
-                            {{ localization[session.language].browse }}
-                        </a>
+                        <PrimaryButton v-if="images.length > 0 || $page.props.auth.user.id === user.id">
+                            <a :href="'/gallery/' + user.id" class="">
+                                {{ localization[session.language].browse }}
+                            </a>
+                        </PrimaryButton>
                         <div class="flex justify-between items-center text-darker dark:text-light font-semibold text-xs uppercase tracking-widest">
                             {{ localization[session.language].user_gallery }}
                         </div>
-                        <Clip
-                            v-if="$page.props.auth.user.id === user.id"
-                            class="w-32 h-full inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md font-semibold text-xs text-lighter uppercase tracking-widest bg-dark-primary dark:bg-dark hover:bg-dark-hover active:bg-dark-hover select-none transition ease-in-out duration-150"
-                            :form="form"
-                            :visible="false"
-                        >
-                            <template #sign>
-                                {{ localization[session.language].add_image }}
-                            </template>
-                        </Clip>
+                        <PrimaryButton v-if="$page.props.auth.user.id === user.id">
+                                <Clip
+                                    :form="form"
+                                    :visible="false"
+                                >
+                                <template #sign>
+                                    {{ localization[session.language].add_image }}
+                                </template>
+                            </Clip>
+                        </PrimaryButton>
                         <div v-else-if="images.length > 0" class="w-32 h-full"></div>
                     </div>
                     <InputError :message="form.errors.message" class="mt-4" />
                 </div>
             </div>
+
             <div class="max-w-2xl mx-auto mt-4 sm:px-6 lg:px-8">
-                <div v-if="uri == '/home'" class="p-6 mb-4 text-darker dark:text-light bg-light-primary dark:bg-dark-primary shadow dark:shadow-none dark:border dark:border-dark rounded-lg">
+                <div v-if="uri == '/home'" class="p-4 sm:p-6 mb-4 text-darker dark:text-light bg-light-primary dark:bg-dark-primary shadow dark:shadow-none dark:border dark:border-dark rounded-lg">
                     <BabbleStoreForm
                         :babbles="babbles.data"
                         :parentObject="null"
