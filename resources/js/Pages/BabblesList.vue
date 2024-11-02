@@ -16,22 +16,20 @@
     })();
 
     function checkPosition() {
-        if(props.babbles.data.length >= 10) {
-            if(!props.babbles.stop) {
-                let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
-                if (pixelsToBottom < 1500) {
-                    axios.post(route('feed.show'))
-                    .then(result => {
-                        if(result.data.stop) {
-                            props.babbles.stop = result.data.stop;
+        if(!props.babbles.stop) {
+            let pixelsToBottom = Math.round(document.documentElement.offsetHeight - document.documentElement.scrollTop - window.innerHeight);
+            if (pixelsToBottom < 1500) {
+                axios.post(route('feed.show'))
+                .then(result => {
+                    if(result.data.stop) {
+                        props.babbles.stop = result.data.stop;
+                    }
+                    if(result.data.data) {
+                        for(let element of result.data.data) {
+                            props.babbles.data.push(element);
                         }
-                        if(result.data.data) {
-                            for(let element of result.data.data) {
-                                props.babbles.data.push(element);
-                            }
-                        }
-                    });
-                }
+                    }
+                });
             }
         }
     }

@@ -78,7 +78,7 @@ Route::middleware(['auth', 'verified', 'online', 'lang'])->controller(UserContro
     Route::post('/subscribe', 'subscribe')->name('user.subscribe');
     Route::post('/unsubscribe', 'unsubscribe_deleted_user')->name('user.unsubscribe');
     Route::get('/home/{follow}/{id}', 'follow');
-    Route::match(['GET', 'POST'], '/gallery/{id}', 'gallery')->name('gallery');
+    Route::get('/gallery/{id}', 'gallery')->name('gallery');
 });
 
 Route::middleware(['auth', 'verified', 'online', 'lang'])->controller(SearchController::class)->group(function () {

@@ -70,10 +70,7 @@
                     <img v-else class="absolute h-48 w-48 -top-24 left-0 sm:left-16 right-0 mx-auto sm:mx-0 object-cover rounded-full border-solid border-white dark:border-dark-primary border-4 bg-white dark:bg-dark-primary" :src="user.avatar != null ? '/storage/avatars/' + user.avatar : '/storage/icons/default.webp'" alt="" loading="lazy">
                 </div>
                 
-
-                <!-- <div class="flex flex-col justify-between sm:flex-row"> -->
                 <div class="grid p-4">
-
                     <div class="main-information flex flex-col items-center sm:items-start sm:pl-72 text-darker dark:text-light pb-4">
                         <h2 class="text-xl font-bold">{{ user.name }}</h2>
                         <p>{{ localization[session.language].registered + ':' }} {{ dayjs(user.created_at).format("DD.MM.YYYY") }}</p>
@@ -81,7 +78,7 @@
                         <p v-else>{{ localization[session.language].last_seen + ':' }} {{ dayjs(user.last_action).add(timezone, 'hour').locale(session.language).fromNow() }}</p>
                     </div>
 
-                    <div class="subscribers flex justify-between text-darker dark:text-light pb-4 px-4">
+                    <div class="subscribers flex justify-between text-darker dark:text-light pb-4 px-2">
                         <div>
                             <a :href="'/home/following/' + user.id" class="hover:underline decoration-additional decoration-2">
                                 {{ localization[session.language].following + ':' }} {{ user.following != null ? user.following.length : 0 }}
@@ -138,8 +135,6 @@
                     type="file"
                     class="hidden"
                 >
-                <!-- <label class="inline-flex items-center px-4 py-2 bg-dark-primary dark:bg-dark border border-transparent cursor-pointer select-none rounded-md font-semibold text-xs text-lighter uppercase tracking-widest hover:bg-dark-hover 
-                active:ring-2 ring-additional ring-offset-2 ring-offset-light dark:ring-offset-dark transition ease-in-out duration-150" for="profileImageUpload"> -->
                 <label class="inline-flex items-center px-4 py-2 bg-dark-primary dark:bg-dark border border-transparent cursor-pointer select-none rounded-md font-semibold text-xs text-lighter uppercase tracking-widest hover:bg-dark-hover 
                 dark:ring-offset-dark transition ease-in-out duration-150" for="profileImageUpload">
                     <strong class="flex w-full justify-between">
@@ -168,8 +163,6 @@
                     type="file"
                     class="hidden"
                 >
-                <!-- <label class="inline-flex items-center px-4 py-2 bg-dark-primary dark:bg-dark border border-transparent cursor-pointer select-none rounded-md font-semibold text-xs text-lighter uppercase tracking-widest hover:bg-dark-hover 
-                active:ring-2 ring-additional ring-offset-2 ring-offset-light dark:ring-offset-dark transition ease-in-out duration-150" for="profileCoverUpload"> -->
                 <label class="inline-flex items-center px-4 py-2 bg-dark-primary dark:bg-dark border border-transparent cursor-pointer select-none rounded-md font-semibold text-xs text-lighter uppercase tracking-widest hover:bg-dark-hover 
                 dark:ring-offset-dark transition ease-in-out duration-150" for="profileCoverUpload">
                     <strong class="flex w-full justify-between">

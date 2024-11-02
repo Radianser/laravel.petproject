@@ -18,9 +18,10 @@ class ChooseLocalization
     {
         if($request->user()) {
             App::setLocale($request->session()->get('language', $request->user()->language));
-        } else {
-            App::setLocale($request->session()->get('language', 'en'));
-        }
+        } 
+        //     else {
+        //     App::setLocale($request->session()->get('language', 'en'));
+        // }
 
         return $next($request);
     }

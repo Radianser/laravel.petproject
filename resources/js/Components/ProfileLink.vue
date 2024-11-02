@@ -43,7 +43,8 @@
                 </div>
                 <div class="text-sm">
                     <span v-if="library.isOnline(profile.last_action, timezone)">{{ localization[session.language].online }}</span>
-                    <span v-else>{{ localization[session.language].last_seen + ':' }} {{ dayjs(profile.last_action).add(timezone, 'hour').locale($page.props.auth.user.language).fromNow() }}</span>
+                    <!-- <span v-else>{{ localization[session.language].last_seen + ':' }} {{ dayjs(profile.last_action).add(timezone, 'hour').locale($page.props.auth.user.language).fromNow() }}</span> -->
+                    <span v-else>{{ dayjs(profile.last_action).add(timezone, 'hour').locale($page.props.auth.user.language).fromNow() }}</span>
                 </div>
             </div>
         </div>

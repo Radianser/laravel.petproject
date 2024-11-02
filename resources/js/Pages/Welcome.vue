@@ -28,10 +28,10 @@
     <Head :title="localization[session.language].welcome" />
     <GuestLayout :localization="localization" :session="session">
         <div
-            class="flex justify-center items-center h-[calc(100vh-64px)]"
+            class="grid items-center sm:flex sm:justify-center sm:items-center min-h-[calc(100vh-64px)]"
         >
             <div class="max-w-4xl p-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 sm:gap-6 lg:gap-8">
+                <div class="sm:grid sm:grid-cols-2 sm:gap-6">
 
                     <!-- picture -->
                     <img v-if="session.theme == 0"
@@ -43,7 +43,7 @@
                         class="h-full object-cover sm:block hidden row-start-1 row-end-4 col-start-1 col-end-1 scale-100 flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500"
                     >
 
-                    <div class="grid grid-rows-[auto_1fr] gap-6 lg:gap-8 row-start-1 row-end-4 col-start-2 col-end-2 mt-1">
+                    <div class="grid grid-rows-[auto_1fr] gap-6 lg:gap-8 row-start-1 row-end-4 col-start-2 col-end-2 sm:mt-1">
                         <!-- switcher -->
                         <div
                             class="scale-100 p-6 rounded-xl text-darker dark:text-light bg-light-primary dark:bg-dark-primary shadow dark:shadow-none dark:border dark:border-dark flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500"

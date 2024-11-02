@@ -14,6 +14,8 @@ use App\Models\Video;
 use App\Models\File;
 use Illuminate\Database\Eloquent\Collection;
 
+use Illuminate\Support\Facades\App;
+
 class RedisController extends Controller
 {
     public $items_per_page = 10;
@@ -23,7 +25,7 @@ class RedisController extends Controller
     // private $cache_time = 604800;
     // private $cache_time = 2592000;
 
-    private $cache_time = 120;
+    private $cache_time = 60;
     private $limit = 500;
     
     public function get_details($messages, $type = 'babble') {
@@ -85,9 +87,11 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if($value->babble_id == $message->id) {
-                $value->user = $this->get_user($value->user_id);
-                $array[] = $value;
+            if(isset($value)) {
+                if($value->babble_id == $message->id) {
+                    $value->user = $this->get_user($value->user_id);
+                    $array[] = $value;
+                }
             }
         }
 
@@ -243,8 +247,10 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if($value->likeable_id == $message->id && $value->likeable_type == $message->type) {
-                $array[] = $this->get_user($value->user_id);
+            if(isset($value)) {
+                if($value->likeable_id == $message->id && $value->likeable_type == $message->type) {
+                    $array[] = $this->get_user($value->user_id);
+                }
             }
         }
 
@@ -280,8 +286,10 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if($value->linkable_id == $message->id && $value->linkable_type == $message->type) {
-                $array[] = $value;
+            if(isset($value)) {
+                if($value->linkable_id == $message->id && $value->linkable_type == $message->type) {
+                    $array[] = $value;
+                }
             }
         }
 
@@ -317,10 +325,12 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
         
-            if($value->user_id == $user_id && $value->home_page == true) {
-                $this->get_comments($value);
-                $this->get_likes($value);
-                $array[] = $value;
+            if(isset($value)) {
+                if($value->user_id == $user_id && $value->home_page == true) {
+                    $this->get_comments($value);
+                    $this->get_likes($value);
+                    $array[] = $value;
+                }
             }
         }
         
@@ -354,10 +364,12 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if($value->imageable_id == $message->id && $value->imageable_type == $message->type) {
-                $this->get_comments($value);
-                $this->get_likes($value);
-                $array[] = $value;
+            if(isset($value)) {
+                if($value->imageable_id == $message->id && $value->imageable_type == $message->type) {
+                    $this->get_comments($value);
+                    $this->get_likes($value);
+                    $array[] = $value;
+                }
             }
         }
 
@@ -399,8 +411,10 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if($value->videoable_id == $message->id && $value->videoable_type == $message->type) {
-                $array[] = $value;
+            if(isset($value)) {
+                if($value->videoable_id == $message->id && $value->videoable_type == $message->type) {
+                    $array[] = $value;
+                }
             }
         }
 
@@ -439,8 +453,10 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if($value->fileable_id == $message->id && $value->fileable_type == $message->type) {
-                $array[] = $value;
+            if(isset($value)) {
+                if($value->fileable_id == $message->id && $value->fileable_type == $message->type) {
+                    $array[] = $value;
+                }
             }
         }
 
@@ -497,8 +513,10 @@ class RedisController extends Controller
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));
             
-            if(in_array($value->$variable, $id_array)) {
-                $content[] = $value;
+            if(isset($value)) {
+                if(in_array($value->$variable, $id_array)) {
+                    $content[] = $value;
+                }
             }
         }
 
@@ -533,14 +551,23 @@ class RedisController extends Controller
     }
     public function turn_the_page($request) {
         $content = (object) [];
+        $content->data = [];
         $content->stop = false;
 
-        $request->session()->increment('i');
+        $i = (int)$request->session()->get('i');
         $posts = $request->session()->get('content');
-        $content->data = $posts[$request->session()->get('i')];
+        $chunk_count = count($posts);
 
-        if(count($posts) == $request->session()->get('i') + 1) {
+        if($chunk_count < $i) {
+            $request->session()->put('i', $chunk_count - 1);
             $content->stop = true;
+        } else {
+            if(isset($posts[$i + 1])) {
+                $request->session()->increment('i');
+                $content->data = $posts[++$i];
+            } else {
+                $content->stop = true;
+            }
         }
 
         return $content;
@@ -554,7 +581,7 @@ class RedisController extends Controller
             $session->language = $request->session()->get('language', $request->user()->language);
         } else {
             $session->theme = $request->session()->get('theme', 0);
-            $session->language = $request->session()->get('language', 'en');
+            $session->language = $request->session()->get('language', App::currentLocale());
         }
 
         return $session;

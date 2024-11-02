@@ -219,7 +219,7 @@
             </nav>
 
             <!-- Page Content -->
-            <main class="min-h-screen pt-16 gap-0 xl:gap-4" :class="{ 'grid grid-cols-main': screenWidth > 1280, 'block': screenWidth <= 1280 }">
+            <main class="min-h-[calc(100vh-64px)] pt-16 gap-0 xl:gap-4" :class="{ 'grid grid-cols-main': screenWidth > 1280, 'block': screenWidth <= 1280 }">
                 <div v-if="screenWidth > 1280">
                     <div
                         class="fixed left-0 top-0 w-28 h-full text-darker dark:text-light bg-button-to-top bg-no-repeat bg-top bg-center dark:bg-dark-primary opacity-0 hover:opacity-80 cursor-pointer overflow-hidden transition-all"

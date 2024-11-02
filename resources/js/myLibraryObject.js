@@ -226,10 +226,10 @@ const library = {
             if (timer) return
 
             timer = setTimeout(() => {
-            callee(...args);
+                callee(...args);
 
-            clearTimeout(timer);
-            timer = null;
+                clearTimeout(timer);
+                timer = null;
             }, timeout);
         }
     },
