@@ -2,6 +2,7 @@
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputError from '@/Components/InputError.vue';
     import { useForm } from '@inertiajs/vue3';
+    import { ref } from 'vue';
     import dayjs from 'dayjs';
     import 'dayjs/locale/ru';
     import relativeTime from 'dayjs/plugin/relativeTime';
@@ -16,12 +17,21 @@
         avatar: null,
         cover: null
     });
-    function toggleFormRender(id, formClass) {
-        document.querySelector('html').classList.toggle('overflow-hidden');
-        document.querySelector('.' + formClass).classList.toggle('hidden');
-        document.querySelector('#' + id).value = null;
-        form.avatar = null;
-        form.cover = null;
+    const avatarChangeForm = ref(false);
+    const coverChangeForm = ref(false);
+    const html = document.querySelector('html');
+
+    function toggleHTMLScroll(inputId, flag = true) {
+        if(flag) {
+            document.querySelector('#' + inputId).value = null;
+            setTimeout(() => {
+                html.classList.toggle('overflow-hidden');
+            }, 400);
+        } else {
+            html.classList.toggle('overflow-hidden');
+        }
+        
+        form.reset();
     }
     function onChange(id, param) {
         if(param == 'image') {
@@ -49,14 +59,26 @@
     // console.log(props.user);
 </script>
 
+<style>
+    .list-enter-active,
+    .list-leave-active {
+        transition: all 0.2s ease;
+    }
+    .list-enter-from,
+    .list-leave-to {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+</style>
+
 <template>
-    <div class="">
+    <div>
         <div class="max-w-2lg md:max-w-5xl mx-auto shadow dark:shadow-none dark:border dark:border-dark overflow-hidden rounded-xl">
 
-            <div class="cover relative bg-cover dark:bg-dark-primary bg h-60 group">
+            <div class="cover relative bg-cover dark:bg-dark-primary h-60 group">
                 <div v-if="uri == '/home'"
-                    @click="toggleFormRender('profileCoverUpload', 'cover-form')"
-                    class="absolute top-4 right-4 px-2 py-1.5 rounded-lg cursor-pointer select-none hover:bg-my-hover-bg hover:shadow-md active:bg-dark-primary dark:active:bg-dark opacity-0 group-hover:opacity-100 transition-all"
+                    @click="coverChangeForm = !coverChangeForm; toggleHTMLScroll('profileCoverUpload', false);"
+                    class="absolute top-4 right-4 px-2 py-1.5 rounded-lg cursor-pointer select-none hover:shadow-md hover:bg-dark-hover active:bg-dark-hover dark:active:bg-dark opacity-0 group-hover:opacity-100 transition-all"
                 >
                     <div class="text-lighter flex items-center">{{ localization[session.language].change_cover }}</div>
                 </div>
@@ -66,8 +88,13 @@
             <div class="profile-information bg-white dark:bg-dark-primary min-h-fit">
 
                 <div class="h-24 sm:h-0 relative select-none">
-                    <img v-if="uri == '/home'" @click="toggleFormRender('profileImageUpload', 'image-form')" class="absolute h-48 w-48 -top-24 left-0 sm:left-16 right-0 mx-auto sm:mx-0 object-cover rounded-full border-solid border-white dark:border-dark-primary border-4 cursor-pointer bg-white dark:bg-dark-primary" :src="user.avatar != null ? '/storage/avatars/' + user.avatar : '/storage/icons/default.jpg'" alt="" loading="lazy">
-                    <img v-else class="absolute h-48 w-48 -top-24 left-0 sm:left-16 right-0 mx-auto sm:mx-0 object-cover rounded-full border-solid border-white dark:border-dark-primary border-4 bg-white dark:bg-dark-primary" :src="user.avatar != null ? '/storage/avatars/' + user.avatar : '/storage/icons/default.webp'" alt="" loading="lazy">
+                    <img v-if="uri == '/home'"
+                        @click="avatarChangeForm = !avatarChangeForm; toggleHTMLScroll('profileImageUpload', false);"
+                        class="absolute h-48 w-48 -top-24 left-0 sm:left-16 right-0 mx-auto sm:mx-0 object-cover rounded-full border-solid border-white dark:border-dark-primary border-4 cursor-pointer bg-white dark:bg-dark-primary"
+                        :src="user.avatar != null ? '/storage/avatars/' + user.avatar : '/storage/icons/default.jpg'" alt="" loading="lazy">
+                    <img v-else
+                        class="absolute h-48 w-48 -top-24 left-0 sm:left-16 right-0 mx-auto sm:mx-0 object-cover rounded-full border-solid border-white dark:border-dark-primary border-4 bg-white dark:bg-dark-primary"
+                        :src="user.avatar != null ? '/storage/avatars/' + user.avatar : '/storage/icons/default.webp'" alt="" loading="lazy">
                 </div>
                 
                 <div class="grid p-4">
@@ -122,12 +149,16 @@
             </div>
         </div>
     </div>
+
     <div class="relative">
-        <div class="image-form hidden">
-            <div @click="toggleFormRender('profileImageUpload', 'image-form'); clearLabel('image'); form.reset(); form.clearErrors();" class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40"></div>
-            <form 
-                @submit.prevent="form.post(route('image.upload'), { onSuccess: () => { clearLabel('image'); toggleFormRender('profileImageUpload', 'image-form'); form.reset(); form.clearErrors(); }, onError: (error) => { form.reset(); library.clearErrors(form);} })"
-                class="absolute left-0 right-0 top-0 bottom-0 px-10 pt-10 pb-8 m-auto w-fit h-fit bg-light-primary dark:bg-dark-primary rounded-lg shadow dark:shadow-none dark:border dark:border-dark flex flex-col justify-evenly items-center z-50"
+        <div v-if="avatarChangeForm"
+            @click="avatarChangeForm = !avatarChangeForm; toggleHTMLScroll('profileImageUpload'); clearLabel('image'); form.reset(); form.clearErrors();"
+            class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">               
+        </div>
+        <Transition name="list">
+            <form v-if="avatarChangeForm"
+                @submit.prevent="form.post(route('image.upload'), { onSuccess: () => { clearLabel('image'); toggleHTMLScroll('profileImageUpload'); form.reset(); form.clearErrors(); }, onError: (error) => { form.reset(); library.clearErrors(form);} })"
+                class="fixed left-0 right-0 top-0 bottom-0 px-10 pt-10 pb-8 m-auto w-fit h-fit bg-light-primary dark:bg-dark-primary rounded-lg shadow dark:shadow-none dark:border dark:border-dark flex flex-col justify-evenly items-center z-50"
                 enctype="multipart/form-data">
                 <input
                     @change="onChange('profileImageUpload', 'image')"
@@ -150,12 +181,16 @@
                 </button>
                 <InputError class="mt-3" :message="form.errors.avatar" />
             </form>
+        </Transition>
+
+        <div v-if="coverChangeForm"
+            @click="coverChangeForm = !coverChangeForm; toggleHTMLScroll('profileCoverUpload'); clearLabel('cover'); form.reset(); form.clearErrors();"
+            class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">
         </div>
-        <div class="cover-form hidden">
-            <div @click="toggleFormRender('profileCoverUpload', 'cover-form'); clearLabel('cover'); form.reset(); form.clearErrors();" class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40"></div>
-            <form 
-                @submit.prevent="form.post(route('image.upload'), { onSuccess: () => { clearLabel('cover'); toggleFormRender('profileCoverUpload', 'cover-form'); form.reset(); form.clearErrors(); }, onError: (error) => { form.reset(); library.clearErrors(form); } })"
-                class="absolute left-0 right-0 top-0 bottom-0 px-10 pt-10 pb-8 m-auto w-fit h-fit bg-light-primary dark:bg-dark-primary rounded-lg shadow dark:shadow-none dark:border dark:border-dark flex flex-col justify-evenly items-center z-50"
+        <Transition name="list">
+            <form v-if="coverChangeForm"
+                @submit.prevent="form.post(route('image.upload'), { onSuccess: () => { clearLabel('cover'); toggleHTMLScroll('profileCoverUpload'); form.reset(); form.clearErrors(); }, onError: (error) => { form.reset(); library.clearErrors(form); } })"
+                class="fixed left-0 right-0 top-0 bottom-0 px-10 pt-10 pb-8 m-auto w-fit h-fit bg-light-primary dark:bg-dark-primary rounded-lg shadow dark:shadow-none dark:border dark:border-dark flex flex-col justify-evenly items-center z-50"
                 enctype="multipart/form-data">
                 <input
                     @change="onChange('profileCoverUpload', 'cover')"
@@ -178,6 +213,6 @@
                 </button>
                 <InputError class="mt-3" :message="form.errors.cover" />
             </form>
-        </div>
+        </Transition>
     </div>
 </template>
