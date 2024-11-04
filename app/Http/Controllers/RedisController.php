@@ -242,7 +242,7 @@ class RedisController extends Controller
 
     public function get_likes($message) {
         $keys = Redis::keys("like:*");
-        $array = $message->likes;
+        $array = $message->likes ?? [];
         
         foreach($keys as $key) {
             $value = json_decode(Redis::get($key));

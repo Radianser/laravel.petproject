@@ -36,20 +36,49 @@
         });
     }
 </script>
+
+<style>
+    .list-enter-active,
+    .list-leave-active {
+        transition: all 0.2s ease;
+    }
+    .list-enter-from,
+    .list-leave-to {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    .viewbox-enter-active,
+    .viewbox-leave-active {
+        transition: all 0.2s ease;
+    }
+    .viewbox-enter-from,
+    .viewbox-leave-to {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+</style>
  
 <template>
     <Head :title="localization[session.language].gallery" />
     <AuthenticatedLayout :localization="localization" :session="session">
-        <ViewBox v-if="store.show === true" :localization="localization" :session="session"/>
+
+        <div v-if="store.show === true"
+            class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">               
+        </div>
+        <Transition name="viewbox">
+            <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+        </Transition>
+
         <div class="w-full p-4">
             <div class="max-w-2lg md:max-w-5xl mx-auto p-2 lg:p-4 text-darker dark:text-light bg-light-primary dark:bg-dark-primary dark:border dark:border-dark shadow dark:shadow-none rounded-lg">
 
                 <h1 class="text-center mb-2 font-semibold text-xs uppercase tracking-widest">
                     {{ localization[session.language].user_gallery }}
                 </h1>
-                <hr class="my-2 border-light dark:border-dark">
+                <hr class="my-2 lg:my-4 border-light dark:border-dark">
 
-                <div v-if="$page.props.auth.user.id === user.id" class="h-8 mb-2 flex gap-4 justify-between">
+                <div v-if="$page.props.auth.user.id === user.id" class="h-8 mb-2 lg:mb-4 flex gap-4 justify-between">
                     <PrimaryButton @click="edit = !edit">
                         {{ !edit ? localization[session.language].edit : localization[session.language].finish }}
                     </PrimaryButton>
@@ -64,9 +93,7 @@
                         </Clip>
                     </PrimaryButton>
                 </div>
-                <div v-else class="flex mb-2 justify-center items-center font-semibold text-xs uppercase tracking-widest">
-                    {{ localization[session.language].user_gallery }}
-                </div>
+                
                 <div v-if="images.data.length > 0" class="grid grid-cols-3 sm:grid-cols-5 gap-2 lg:gap-4 rounded-lg">
                     <picture v-for="(image, index) in form.images" :key="image" class="relative w-full">
                         <div v-if="image.stub" class="w-full flex flex-col justify-center items-center aspect-square rounded-lg cursor-pointer object-cover bg-light dark:bg-dark shadow dark:shadow-none dark:border dark:border-dark">
