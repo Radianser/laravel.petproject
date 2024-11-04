@@ -72,8 +72,9 @@
             <ProfileInfo :user="user" :subscription="subscription" :localization="localization" :session="session" />
 
             <div v-if="$page.props.auth.user" class="gallery mt-4">
-                <div class="max-w-2lg md:max-w-5xl mx-auto p-4 shadow dark:shadow-none dark:border dark:border-dark overflow-hidden bg-light-primary dark:bg-dark-primary rounded-xl">
-                    <div v-if="images.length > 0" class="w-full min-h-10 grid grid-cols-3 sm:grid-cols-6 gap-2 lg:gap-4 overflow-hidden rounded-lg">
+                <div v-if="images.length > 0" class="max-w-2lg md:max-w-5xl mx-auto p-4 shadow dark:shadow-none dark:border dark:border-dark overflow-hidden bg-light-primary dark:bg-dark-primary rounded-xl">
+
+                    <div class="w-full min-h-10 grid grid-cols-3 sm:grid-cols-6 gap-2 lg:gap-4 overflow-hidden rounded-lg">
                         <picture v-for="(image, index) in form.images" :key="image" class="w-full text-darker dark:text-light">
                             <div v-if="image.stub" class="w-full flex flex-col justify-center items-center aspect-square rounded-lg cursor-pointer object-cover bg-light dark:bg-dark shadow dark:shadow-none dark:border dark:border-dark">
                                 <span class="loader"></span>
@@ -82,9 +83,7 @@
                             <img v-else @click="library.showViewBox(store, form.images, index, user)" :src="image.src" alt="" class="w-full aspect-square rounded-lg cursor-pointer object-cover bg-light dark:bg-dark shadow-sm dark:shadow-none dark:border dark:border-dark" loading="lazy">
                         </picture>
                     </div>
-                    <div v-else class="w-full min-h-16 flex text-dark dark:text-light justify-center items-center gap-4 overflow-hidden rounded-lg">
-                        {{ localization[session.language].gallery_empty }}
-                    </div>
+
                     <hr class="my-4 border-light dark:border-dark">
                     <div class="h-8 flex gap-4" :class="{ 'justify-between': images.length > 0 || $page.props.auth.user.id === user.id, 'justify-center': images.length == 0}">
                         <PrimaryButton v-if="images.length > 0 || $page.props.auth.user.id === user.id">
