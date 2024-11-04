@@ -60,12 +60,12 @@
 </script>
 
 <style>
-    .list-enter-active,
-    .list-leave-active {
+    .form-enter-active,
+    .form-leave-active {
         transition: all 0.2s ease;
     }
-    .list-enter-from,
-    .list-leave-to {
+    .form-enter-from,
+    .form-leave-to {
         opacity: 0;
         transform: translateY(15px);
     }
@@ -155,7 +155,7 @@
             @click="avatarChangeForm = !avatarChangeForm; toggleHTMLScroll('profileImageUpload'); clearLabel('image'); form.reset(); form.clearErrors();"
             class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">               
         </div>
-        <Transition name="list">
+        <Transition name="form">
             <form v-if="avatarChangeForm"
                 @submit.prevent="form.post(route('image.upload'), { onSuccess: () => { clearLabel('image'); toggleHTMLScroll('profileImageUpload'); form.reset(); form.clearErrors(); }, onError: (error) => { form.reset(); library.clearErrors(form);} })"
                 class="fixed left-0 right-0 top-0 bottom-0 px-10 pt-10 pb-8 m-auto w-fit h-fit bg-light-primary dark:bg-dark-primary rounded-lg shadow dark:shadow-none dark:border dark:border-dark flex flex-col justify-evenly items-center z-50"
@@ -187,7 +187,7 @@
             @click="coverChangeForm = !coverChangeForm; toggleHTMLScroll('profileCoverUpload'); clearLabel('cover'); form.reset(); form.clearErrors();"
             class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">
         </div>
-        <Transition name="list">
+        <Transition name="form">
             <form v-if="coverChangeForm"
                 @submit.prevent="form.post(route('image.upload'), { onSuccess: () => { clearLabel('cover'); toggleHTMLScroll('profileCoverUpload'); form.reset(); form.clearErrors(); }, onError: (error) => { form.reset(); library.clearErrors(form); } })"
                 class="fixed left-0 right-0 top-0 bottom-0 px-10 pt-10 pb-8 m-auto w-fit h-fit bg-light-primary dark:bg-dark-primary rounded-lg shadow dark:shadow-none dark:border dark:border-dark flex flex-col justify-evenly items-center z-50"

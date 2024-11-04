@@ -112,29 +112,8 @@
 </script>
 
 <template>
-    <div class="pop-up bg-black cursor-pointer" @click="library.closeViewBox(store)">
+    <div class="pop-up cursor-pointer" @click="library.closeViewBox(store)">
         <div class="pop-up-box min-h-full flex justify-center items-center transition-all ease-linear text-darker dark:text-light">
-            <!-- <div
-                @click.stop=""
-                class="flex max-[1023px]:flex-wrap m-9 max-[1023px]:w-full max-[1023px]:m-2 bg-light-primary dark:bg-dark-primary dark:border dark:border-dark shadow dark:shadow-none rounded-lg overflow-hidden"
-                @touchstart="touchStart($event);"
-                @touchmove="touchMove($event);"
-                @touchend="touchEnd($event);"
-            >
-                    <img v-if="store.type == 'image'"
-                        @load="element = $event.target; setHeight();"
-                        :src="store.src"
-                        alt=""
-                        class="relative lg:min-h-[500px] w-full sm:w-[calc(100%-350px)] lg:max-h-pc object-contain bg-light dark:bg-dark cursor-default"
-                    >
-                    <iframe v-if="store.type == 'video' && store.embedded == true" :src="store.src" frameborder="0"
-                        @load="element = $event.target; setHeight();"
-                        class="lg:min-h-[500px] 2xl:min-h-[845px] lg:max-h-pc aspect-video w-full" 
-                        allow="autoplay; fullscreen; accelerometer; gyroscope; picture-in-picture; encrypted-media;"
-                    >
-                    </iframe>
-                    <video v-if="store.type == 'video' && store.embedded == false" :src="store.src" controls class="lg:min-h-[500px] 2xl:min-h-[700px] lg:max-h-pc"></video> -->
-
             <div
                 @click.stop=""
                 class="grid grid-cols-1 m-9 max-[1023px]:w-full max-[1023px]:m-2 bg-light-primary dark:bg-dark-primary dark:border dark:border-dark shadow dark:shadow-none rounded-lg overflow-hidden"
@@ -195,32 +174,6 @@
                             />
                         </div>
                     </div>
-                
-                <!-- <div class="lg:w-[350px] w-full rounded-r-lg cursor-auto" :style="getHeight()">
-                    <div class="flex p-4 h-20 border-b border-light dark:border-dark">
-                        <AuthorImage
-                            :user="store.user"
-                        />
-                        <div class="flex w-11/12 justify-between">
-                            <div class="flex flex-col justify-center">
-                                <a v-if="store.user != null" :href="'/profile/' + store.user.id">
-                                    <span class="font-bold">{{ store.user.name }}</span>
-                                </a>
-                                <p v-else class="font-bold">
-                                    {{ localization[session.language].deleted }}
-                                </p>
-                                <div class="">
-                                    <div>
-                                        <small>{{ new Date(store.created_at).toLocaleString() }}</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <Likes 
-                                :object="store"
-                                :objectType="store.type"
-                            />
-                        </div>
-                    </div> -->
                     
                     <Comments
                         :object="store"

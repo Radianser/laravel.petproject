@@ -49,25 +49,37 @@
 
 <style>
     .list-enter-active,
-    .list-leave-active,
-    .preview-enter-active,
-    .preview-leave-active {
-        transition: all 0.5s ease;
+    .list-leave-active {
+        transition: all 0.2s ease;
     }
     .list-enter-from,
     .list-leave-to {
         opacity: 0;
+        transform: translateX(30px);
     }
-    .preview-enter-from,
-    .preview-leave-to {
+
+    .viewbox-enter-active,
+    .viewbox-leave-active {
+        transition: all 0.2s ease;
+    }
+    .viewbox-enter-from,
+    .viewbox-leave-to {
         opacity: 0;
+        transform: translateY(15px);
     }
 </style>
  
 <template>
     <Head :title="user.name" />
     <AuthenticatedLayout v-if="$page.props.auth.user" :localization="localization" :session="session">
-        <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+
+        <div v-if="store.show === true"
+            class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">               
+        </div>
+        <Transition name="viewbox">
+            <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+        </Transition>
+
         <div class="w-full p-4">
             <ProfileInfo :user="user" :subscription="subscription" :localization="localization" :session="session" />
 
@@ -139,7 +151,14 @@
     </AuthenticatedLayout>
 
     <GuestLayout v-else :localization="localization" :session="session">
-        <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+
+        <div v-if="store.show === true"
+            class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">               
+        </div>
+        <Transition name="viewbox">
+            <ViewBox v-if="store.show === true" :localization="localization" :session="session" />
+        </Transition>
+
         <div class="w-full p-4">
             <ProfileInfo :user="user" :subscription="subscription" :localization="localization" :session="session" />
             <div class="max-w-2xl mx-auto mt-4 sm:px-6 lg:px-8">
