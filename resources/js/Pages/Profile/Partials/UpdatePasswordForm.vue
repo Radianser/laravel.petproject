@@ -6,7 +6,7 @@
     import { useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
 
-    defineProps({
+    const props = defineProps({
         localization: {
             type: Object,
         },
@@ -21,9 +21,12 @@
         current_password: '',
         password: '',
         password_confirmation: '',
+        language: props.session.language,
     });
 
     const updatePassword = () => {
+        form.errors = {};
+        form.language = props.session.language;
         form.put(route('password.update'), {
             preserveScroll: true,
             onSuccess: () => form.reset(),

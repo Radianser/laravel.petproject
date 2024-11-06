@@ -12,8 +12,6 @@ use App\Models\Link;
 use App\Models\Image;
 use App\Models\Video;
 use App\Models\File;
-use Illuminate\Database\Eloquent\Collection;
-
 use Illuminate\Support\Facades\App;
 
 class RedisController extends Controller
@@ -22,9 +20,6 @@ class RedisController extends Controller
     public $user_props = ['id', 'name', 'avatar', 'cover', 'following', 'followers', 'language', 'theme', 'sorting', 'created_at', 'last_action'];
     public $post_props = ['id', 'user_id', 'message', 'created_at', 'updated_at', 'babble_id', 'babble_user_id'];
     public $comment_props = ['id', 'user_id', 'commentable_id', 'commentable_type', 'message', 'created_at', 'updated_at'];
-    // private $cache_time = 604800;
-    // private $cache_time = 2592000;
-
     private $cache_time = 60;
     private $limit = 500;
     

@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Controllers\RedisController;
+use Illuminate\Support\Facades\App;
 
 class PasswordResetLinkController extends Controller
 {
@@ -35,7 +36,13 @@ class PasswordResetLinkController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
-            'email' => 'required|email',
+            'language' => 'required|string|max:2'
+        ]);
+
+        App::setLocale($request->language);
+
+        $request->validate([
+            'email' => 'required|email'
         ]);
 
         // We will send the password reset link to this user. Once we have attempted

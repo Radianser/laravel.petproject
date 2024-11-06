@@ -64,7 +64,7 @@
         let touchDifference = clientYStart.value - clientYEnd.value;
 
         if(scrollTopEnd.value === 0) {
-            if(touchDifference < 0 && Math.abs(touchDifference) > 100) {
+            if(touchDifference < 0 && Math.abs(touchDifference) > 50) {
                 popUpWindow.value = null;
                 popUpBox.value = null;
                 scrollTopStart.value = null;
@@ -118,9 +118,9 @@
                 @click.stop=""
                 class="grid grid-cols-1 m-9 max-[1023px]:w-full max-[1023px]:m-2 bg-light-primary dark:bg-dark-primary dark:border dark:border-dark shadow dark:shadow-none rounded-lg overflow-hidden"
                 :class="{'lg:grid-cols-[1fr_350px]': Number(store.id)}"
-                @touchstart="touchStart($event);"
-                @touchmove="touchMove($event);"
-                @touchend="touchEnd($event);"
+                @touchstart.stop="touchStart($event);"
+                @touchmove.stop="touchMove($event);"
+                @touchend.stop="touchEnd($event);"
             >
                 <div class="relative">
                     <div v-if="store.type == 'image' && store.index - 1 >= 0" @click="switchBack()" class="hidden sm:flex absolute group justify-center items-center h-full w-28 left-0 top-0 hover:bg-my-hover-bg">

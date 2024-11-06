@@ -29,9 +29,12 @@
         email: props.email,
         password: '',
         password_confirmation: '',
+        language: props.session.language,
     });
 
     const submit = () => {
+        form.errors = {};
+        form.language = props.session.language;
         form.post(route('password.store'), {
             onFinish: () => form.reset('password', 'password_confirmation'),
         });
@@ -52,7 +55,6 @@
                             class="mt-2 block w-full"
                             v-model="form.email"
                             required
-                            autofocus
                             autocomplete="username"
                             :placeholder="localization[session.language].email_placeholder"
                         />
@@ -66,7 +68,6 @@
                             class="mt-2 block w-full"
                             v-model="form.password"
                             required
-                            autocomplete="new-password"
                             :placeholder="localization[session.language].create_password_placeholder"
                         />
                         <InputError class="mt-2" :message="form.errors.password" />
@@ -79,7 +80,6 @@
                             class="mt-2 block w-full"
                             v-model="form.password_confirmation"
                             required
-                            autocomplete="new-password"
                             :placeholder="localization[session.language].confirm_password_placeholder"
                         />
                         <InputError class="mt-2" :message="form.errors.password_confirmation" />

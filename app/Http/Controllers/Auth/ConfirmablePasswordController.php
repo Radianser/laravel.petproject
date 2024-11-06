@@ -11,6 +11,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Controllers\RedisController;
+use Illuminate\Support\Facades\App;
 
 class ConfirmablePasswordController extends Controller
 {
@@ -32,6 +33,12 @@ class ConfirmablePasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $request->validate([
+            'language' => 'required|string|max:2'
+        ]);
+
+        App::setLocale($request->language);
+
         if (! Auth::guard('web')->validate([
             'email' => $request->user()->email,
             'password' => $request->password,

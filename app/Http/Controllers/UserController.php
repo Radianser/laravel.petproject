@@ -23,7 +23,7 @@ class UserController extends Controller
 
     public function index(Request $request, $id = null)
     {
-        if(!$request->user()) {
+        if(!Auth::check()) {
             return $this->get_user_page($request, $id);
         }
 
@@ -47,10 +47,11 @@ class UserController extends Controller
     private function get_user_page(Request $request, $id): Response
     {
         $user = $this->redis->get_user($id);
+        $follow = $request->user()->following ?? [];
         
         if($request->user()) {
             $user_gallery = $this->redis->get_photos($user->id, 6);
-            $subscription = in_array($user->id, $request->user()->following);
+            $subscription = in_array($user->id, $follow);
         } else {
             $user_gallery = [];
             $subscription = false;

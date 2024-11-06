@@ -14,6 +14,7 @@ use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 use App\Http\Controllers\RedisController;
+use Illuminate\Support\Facades\App;
 
 class NewPasswordController extends Controller
 {
@@ -39,6 +40,12 @@ class NewPasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $request->validate([
+            'language' => 'required|string|max:2'
+        ]);
+
+        App::setLocale($request->language);
+
         $request->validate([
             'token' => 'required',
             'email' => 'required|email',

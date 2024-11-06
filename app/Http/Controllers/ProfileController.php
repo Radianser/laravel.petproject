@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Redis;
 use App\Http\Controllers\RedisController;
+use Illuminate\Support\Facades\App;
 
 class ProfileController extends Controller
 {
@@ -37,6 +38,9 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+
+        App::setLocale($validated['language']);
+
         $request->user()->fill($validated);
 
         $redis = new RedisController;
@@ -61,6 +65,12 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $request->validate([
+            'language' => 'required|string|max:2'
+        ]);
+
+        App::setLocale($request->language);
+        
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);

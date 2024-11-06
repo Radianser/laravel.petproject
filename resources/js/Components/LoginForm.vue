@@ -1,13 +1,12 @@
 <script setup>
 import Checkbox from '@/Components/Checkbox.vue';
-// import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm } from '@inertiajs/vue3';
 
-let props = defineProps({
+const props = defineProps({
     canResetPassword: {
         type: Boolean,
     },
@@ -29,9 +28,12 @@ const form = useForm({
     email: '',
     password: '',
     remember: false,
+    language: props.session.language,
 });
 
 const submit = () => {
+    form.errors = {};
+    form.language = props.session.language;
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
     });
@@ -54,7 +56,7 @@ const submit = () => {
                     class="mt-2 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="email"
+                    autocomplete="username"
                     :placeholder="localization[session.language].email_placeholder"
                 />
 
