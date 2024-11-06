@@ -6,7 +6,7 @@
     import TextInput from '@/Components/TextInput.vue';
     import { Head, useForm } from '@inertiajs/vue3';
 
-    defineProps({
+    const props = defineProps({
         status: {
             type: String,
         },
@@ -21,9 +21,12 @@
 
     const form = useForm({
         email: '',
+        language: props.session.language,
     });
 
     const submit = () => {
+        form.errors = {};
+        form.language = props.session.language;
         form.post(route('password.email'));
     };
 </script>
@@ -48,7 +51,6 @@
                             class="mt-2 block w-full"
                             v-model="form.email"
                             required
-                            autofocus
                             autocomplete="username"
                             :placeholder="localization[session.language].email_placeholder"
                         />

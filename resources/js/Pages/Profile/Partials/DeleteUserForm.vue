@@ -8,7 +8,7 @@
     import { useForm } from '@inertiajs/vue3';
     import { nextTick, ref } from 'vue';
 
-    defineProps({
+    const props = defineProps({
         localization: {
             type: Object,
         },
@@ -21,6 +21,7 @@
 
     const form = useForm({
         password: '',
+        language: props.session.language,
     });
 
     const confirmUserDeletion = () => {
@@ -30,6 +31,8 @@
     };
 
     const deleteUser = () => {
+        form.errors = {};
+        form.language = props.session.language;
         form.delete(route('profile.destroy'), {
             preserveScroll: true,
             onSuccess: () => closeModal(),

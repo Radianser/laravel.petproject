@@ -5,7 +5,7 @@
     import TextInput from '@/Components/TextInput.vue';
     import { Link, useForm, usePage } from '@inertiajs/vue3';
 
-    defineProps({
+    const props = defineProps({
         mustVerifyEmail: {
             type: Boolean,
         },
@@ -25,7 +25,14 @@
     const form = useForm({
         name: user.name,
         email: user.email,
+        language: props.session.language,
     });
+
+    const submit = () => {
+        form.errors = {};
+        form.language = props.session.language;
+        form.patch(route('profile.update'));
+    };
 </script>
 
 <template>
@@ -37,7 +44,7 @@
                 {{ localization[session.language].profile_information_text }}
             </p>
         </header>
-        <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
+        <form @submit.prevent="submit" class="mt-6 space-y-6">
             <div>
                 <InputLabel for="name" :value="localization[session.language].name" />
                 <TextInput

@@ -18,9 +18,12 @@
 
     const form = useForm({
         password: '',
+        language: props.session.language,
     });
 
     const submit = () => {
+        form.errors = {};
+        form.language = props.session.language;
         form.post(route('password.confirm'), {
             onFinish: () => form.reset(),
         });
@@ -44,8 +47,6 @@
                             class="mt-2 block w-full"
                             v-model="form.password"
                             required
-                            autocomplete="current-password"
-                            autofocus
                             :placeholder="localization[session.language].confirm_password_placeholder"
                         />
                         <InputError class="mt-2" :message="form.errors.password" />

@@ -22,12 +22,12 @@
 </script>
 
 <style>
-    .list-enter-active,
-    .list-leave-active {
+    .reply-enter-active,
+    .reply-leave-active {
         transition: all 0.2s ease;
     }
-    .list-enter-from,
-    .list-leave-to {
+    .reply-enter-from,
+    .reply-leave-to {
         opacity: 0;
         transform: translateY(15px);
     }
@@ -50,7 +50,7 @@
         class="form fixed left-0 top-0 w-screen h-screen bg-black opacity-30 z-40">               
     </div>
     <!-- Form -->
-    <Transition name="list">
+    <Transition name="reply">
         <div v-if="showReplyForm === true" class="pop-up" @click="toggleHTMLScroll()">
             <div class="w-full min-h-full py-24 flex justify-center items-center">
                 <div @click.stop="" class="w-full sm:w-1/2 p-6 max-[640px]:mx-4 sm:mr-4 h-fit max-w-2xl rounded-lg bg-light-primary dark:bg-dark-primary dark:border dark:border-dark shadow dark:shadow-none">

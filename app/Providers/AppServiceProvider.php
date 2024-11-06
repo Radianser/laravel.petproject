@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             /** @var \Illuminate\Foundation\Application $app */
             $app = $this->app;
             return $app->isProduction()
-                        ? $rule->mixedCase()->uncompromised()
+                        ? $rule->mixedCase()
                         : $rule;
         });
 
