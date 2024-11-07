@@ -86,7 +86,7 @@ const library = {
         let files = event.target.files;
         for(let index in files) {
             if(typeof files[index] == "object") {
-                form.add_files[index] = files[index];
+                form.add_files[files[index].name] = files[index];
             }
         }
         validateFiles(form);
@@ -208,7 +208,7 @@ const library = {
     
         return true;
     },
-    makeId(length) {
+    getRandomString(length = 5) {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!"№;%:?*)(+=_/|><`}{][-';
         const charactersLength = characters.length;
@@ -312,22 +312,48 @@ async function validateFiles(form) {
         insertFiles(form);
     }
 }
-function insertFiles(form) {
-    for(let index in form.add_files) {
-        let reader = new FileReader();
-        reader.onload = function (event) {
+
+async function getFile(form, index) {
+    return new Promise((resolve, reject) => {
+        var reader = new FileReader();
+        reader.onload = (event) => {
             let file = createFileObject(event.target.result, form.add_files[index]);
-            
-            if(file.type == 'image') {
+            resolve(file);
+        }
+        reader.readAsDataURL(form.add_files[index]);
+    });
+}
+
+async function insertFiles(form) {
+    for(let index in form.add_files) {
+        let file = await getFile(form, index);
+        
+        if(file.type == 'image') {
+            if(!checkForDuplicates(form.images, file)) {
                 form.images.push(file);
-            } else if(file.type == 'video') {
+            }
+        } else if(file.type == 'video') {
+            if(!checkForDuplicates(form.videos, file)) {
                 form.videos.push(file);
-            } else {
+            }
+        } else {
+            if(!checkForDuplicates(form.files, file)) {
                 form.files.push(file);
             }
         }
-        reader.readAsDataURL(form.add_files[index]);
     }
+}
+
+function checkForDuplicates(arr, file) {
+    let flag = false;
+
+    arr.forEach((elem, index, arr) => {
+        if(elem.id === file.id) {
+            flag = true;
+        }
+    });
+
+    return flag;
 }
 function url_parser(url, obj) {
     let youtube = youtube_parser(url, obj);
@@ -458,7 +484,8 @@ function createFileObject(src, item) {
     let urlRegex = /([a-z]+)\/([a-zA-Z0-9+.-]+)/;
     let match = item.type.match(urlRegex);
 
-    obj.id = library.makeId(20);
+    // obj.id = library.getRandomString(20);
+    obj.id = item.name;
     obj.src = src;
 
     if(match) {
