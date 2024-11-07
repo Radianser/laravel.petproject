@@ -2,7 +2,7 @@
     import library from '@/myLibraryObject.js';
 
     const props = defineProps(['form', 'visible']);
-    let id = library.makeId(20);
+    let id = library.getRandomString(20);
 
     // console.log(form);
 </script>

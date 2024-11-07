@@ -125,7 +125,7 @@
                         <div v-else class="truncate font-bold text-sm">{{ file.original_title }}</div> -->
                         <div class="truncate font-bold text-sm">{{ file.original_title }}</div>
 
-                        <div v-if="file.size" class="truncate text-sm">{{ (file.size / 1024).toFixed(1) + " KB" }}</div>
+                        <div v-if="Number(file.size) !== NaN" class="truncate text-sm">{{ (file.size / 1024).toFixed(1) + " KB" }}</div>
                         <div v-else class="truncate text-sm">{{ localization[session.language].linked }}</div>
                     </div>
                 </div>

@@ -55,7 +55,8 @@ export default {
                 'additional-dark': 'rgb(67 56 202)', //bg-indigo-700
             },
             backgroundColor: {
-                'cover-change-button': 'rgba(64, 64, 64, 1)',
+                'cover-change-button': 'rgba(64, 64, 64, 1)', //bg-neutral-700
+                'my-hover-bg': 'rgba(64, 64, 64, 0.3)', //bg-neutral-700
 
                 'dark-input': 'rgb(38 38 38)', //bg-neutral-800
                 'button-to-top': 'rgb(229 231 235)', //bg-gray-200
